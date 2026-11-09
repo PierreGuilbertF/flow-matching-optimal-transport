@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "Please cite the accompanying manuscript listed in preferred-citation."
+type: software
+title: "Flow Matching and Optimal Transport: An Illustrated Introduction to Wasserstein–Otto Geometry — Scripts and Figures"
+authors:
+  - family-names: Guilbert
+    given-names: Pierre
+    orcid: "https://orcid.org/0009-0002-1582-4435"
+preferred-citation:
+  type: unpublished
+  title: "Flow Matching and Optimal Transport: An Illustrated Introduction to Wasserstein–Otto Geometry"
+  authors:
+    - family-names: Guilbert
+      given-names: Pierre
+      orcid: "https://orcid.org/0009-0002-1582-4435"
+  year: 2026
+  doi: "10.5281/zenodo.24084198"
+  url: "https://doi.org/10.5281/zenodo.24084198"
+  publisher:
+    name: Zenodo
+  notes: "Pedagogical manuscript."

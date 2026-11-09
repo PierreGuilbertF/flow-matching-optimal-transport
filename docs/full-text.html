@@ -1,0 +1,1029 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flow Matching and Optimal Transport: An Illustrated Introduction to Wasserstein–Otto Geometry — Pierre Guilbert</title><meta name="description" content="Read the complete pedagogical manuscript on Flow Matching and Wasserstein–Otto geometry.">
+<meta name="author" content="Pierre Guilbert"><meta name="citation_title" content="Flow Matching and Optimal Transport: An Illustrated Introduction to Wasserstein–Otto Geometry">
+<meta name="keywords" content="Flow Matching, optimal transport, Wasserstein–Otto geometry, generative modelling, continuity equation, Wasserstein geodesics">
+<meta name="citation_doi" content="10.5281/zenodo.24084198">
+<meta name="citation_author" content="Guilbert, Pierre"><meta name="citation_publication_date" content="2026">
+<link rel="stylesheet" href="style.css"><link rel="icon" href="data:,">
+</head><body><a class="skip" href="#main">Skip to content</a><header><a class="brand" href="index.html">FLOW MATCHING · WASSERSTEIN–OTTO</a><nav aria-label="Main navigation"><a href="index.html">Overview</a><a aria-current="page" href="full-text.html">Read the paper</a><a href="gallery.html">Figures</a><a href="videos.html">Videos</a><a href="resources.html">Code &amp; citation</a></nav></header>
+<main id="main" class=""><h1>Flow Matching and Optimal Transport: An Illustrated Introduction to Wasserstein–Otto Geometry</h1><p class="byline">Pierre Guilbert · 2026 · <a href="https://orcid.org/0009-0002-1582-4435">0009-0002-1582-4435</a></p><p><a href="manuscript.pdf">Download the PDF</a>. This HTML version is provided for reading and indexing; the PDF is the reference version.</p><h2>Abstract</h2><p>We recall and derive the equations underlying Flow Matching, making
+explicit the probability density function of the linearly interpolated
+random variable and relating it to the transporting velocity field
+through the continuity equation. We visualise how the initial density is
+transported and compare the resulting path with a geodesic in
+Wasserstein–Otto geometry. We demonstrate that, for an isotropic
+Gaussian initial law, the Flow Matching velocity field is the
+minimum-energy representative of the density variation at each time,
+among fields satisfying the continuity equation, even though the path is
+generally not a geodesic under the Wasserstein–Otto metric. We explain
+the distinction between this local minimisation and the minimisation of
+the action over paths with fixed endpoints using explicit calculations
+and illustrations.</p>
+<p class="keywords"><strong>Keywords:</strong> Flow Matching; optimal transport; Wasserstein–Otto geometry; generative modelling; continuity equation; Wasserstein geodesics.</p><details class="contents"><summary>Contents</summary><ol><li><a href="#sec:introduction">1
+Introduction</a></li><li><a href="#sec:flow-matching">2 Flow
+Matching and transport of densities</a></li><li><a href="#sec:independent-paths">3
+Probability paths under independent interpolation</a></li><li><a href="#sec:geometric-comparison">4
+Wasserstein–Otto geometry and comparison with geodesics</a></li><li><a href="#sec:discussion">5
+Discussion</a></li><li><a href="#sec:additional-visualisations">6
+Additional visualisations</a></li></ol></details><section id="sec:introduction" class="level2" data-number="1">
+<h2 data-number="1"><span class="header-section-number">1</span>
+Introduction</h2>
+<p>Generative machine learning consists in approximating a probability
+density
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><annotation encoding="application/x-tex">p_{\mathrm{data}}</annotation></semantics></math>,
+from independent and identically distributed samples
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mi>N</mi></msub><mo>∼</mo><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub></mrow><annotation encoding="application/x-tex">x_1,\ldots,x_N\sim p_{\mathrm{data}}</annotation></semantics></math>,
+using a model
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mi>θ</mi></msub><annotation encoding="application/x-tex">p_\theta</annotation></semantics></math>.
+A classical approach is to estimate an energy-based parametric model
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>θ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msubsup><mi>Z</mi><mi>θ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><msup><mi>e</mi><mrow><mi>−</mi><msub><mi>U</mi><mi>θ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>Z</mi><mi>θ</mi></msub><mo>=</mo><msub><mo>∫</mo><mi>E</mi></msub><msup><mi>e</mi><mrow><mi>−</mi><msub><mi>U</mi><mi>θ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">p_\theta(x)=Z_\theta^{-1}e^{-U_\theta(x)},\qquad
+Z_\theta=\int_E e^{-U_\theta(x)}\,dx,</annotation></semantics></math>
+whose parameters are optimised by minimising the Kullback–Leibler
+divergence
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mrow><mi mathvariant="normal">K</mi><mi mathvariant="normal">L</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><mo stretchy="false" form="postfix">∥</mo><msub><mi>p</mi><mi>θ</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">D_{\mathrm{KL}}(p_{\mathrm{data}}\|p_\theta)</annotation></semantics></math>,
+or another discrepancy. This approach and the difficulties arising from
+it are discussed in Mallat’s lectures at the Collège de France <a
+href="#ref-Mallat2025">[18]</a>. Computing the normalising constant
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Z</mi><mi>θ</mi></msub><annotation encoding="application/x-tex">Z_\theta</annotation></semantics></math>
+and the model expectations appearing in likelihood-based training
+involves integrals which are generally intractable in high dimension, as
+for images or videos. Even after training, samples must be drawn from
+the model. For energy-based models, this is often done with Markov chain
+Monte Carlo methods, such as the Metropolis algorithm <a
+href="#ref-MetropolisEtAl1953">[19]</a>.</p>
+<p>A recent approach combines distribution estimation and sampling by
+learning how to transport a simple distribution
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><annotation encoding="application/x-tex">p_{\mathrm{init}}</annotation></semantics></math>
+to the data distribution. Diffusion models <a
+href="#ref-HoEtAl2020">[20]</a>, <a href="#ref-SongEtAl2021">[21]</a>
+progressively add noise to data until the resulting distribution is
+close to a prescribed noise law. A learned reverse process then
+generates data by progressively removing this noise. Flow Matching <a
+href="#ref-LipmanEtAl2023">[2]</a> instead learns a velocity field
+associated with a chosen probability path. In the case studied here,
+this path results from linear interpolation between a random variable
+drawn from the data distribution and an independent random variable
+drawn from the initial law. Sampling is performed by integrating this
+field from the initial distribution.</p>
+<p>This manuscript takes a pedagogical point of view on the probability
+path and velocity field arising from linear interpolation in Flow
+Matching. We derive the density of the interpolated random variable,
+relate its evolution to the transporting velocity through the continuity
+equation, and illustrate the resulting flow. We then use
+Wasserstein–Otto geometry to address two questions. At each time, is the
+Flow Matching velocity a minimum-energy field transporting the
+prescribed density variation? Does the density path itself follow a
+geodesic between its endpoints? Separating these questions helps explain
+the role of the velocity field and of the chosen probability path in
+Flow Matching. We discuss them through explicit calculations and a
+Gaussian mixture example.</p>
+</section>
+<section id="sec:flow-matching" class="level2" data-number="2">
+<h2 data-number="2"><span class="header-section-number">2</span> Flow
+Matching and transport of densities</h2>
+<p>Flow Matching belongs to the family of methods which estimate the
+probability distribution underlying the available data by transporting
+an initial distribution
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><annotation encoding="application/x-tex">p_{\mathrm{init}}</annotation></semantics></math>.
+The idea is to approximate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><annotation encoding="application/x-tex">p_{\mathrm{data}}</annotation></semantics></math>
+by the push-forward of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><annotation encoding="application/x-tex">p_{\mathrm{init}}</annotation></semantics></math>
+under a flow
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ϕ</mi><mi>t</mi></msub><annotation encoding="application/x-tex">\phi_t</annotation></semantics></math>
+associated with a velocity field
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>v</mi><mi>θ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo>,</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">v_\theta(t,x)</annotation></semantics></math>.
+For each initial point
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>,
+its trajectory
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>↦</mo><msub><mi>ϕ</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">t\mapsto\phi_t(x)</annotation></semantics></math>
+satisfies
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>∂</mi><mi>t</mi></msub><msub><mi>ϕ</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi>v</mi><mi>θ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo>,</mo><msub><mi>ϕ</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>ϕ</mi><mn>0</mn></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>x</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">\partial_t\phi_t(x)=v_\theta(t,\phi_t(x)),
+\qquad \phi_0(x)=x.</annotation></semantics></math> The flow transports
+the initial distribution, and its value at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t=1</annotation></semantics></math>
+defines the model distribution:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><mspace width="0.167em"></mspace><mi>d</mi><mi>y</mi><mo>≃</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>ϕ</mi><mn>1</mn></msub><msub><mo stretchy="false" form="postfix">)</mo><mi>#</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">p_{\mathrm{data}}\,dy\simeq(\phi_1)_\#(p_{\mathrm{init}}\,dx).</annotation></semantics></math>
+The velocity field
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>v</mi><mi>θ</mi></msub><annotation encoding="application/x-tex">v_\theta</annotation></semantics></math>
+is to be learned. Flow Matching represents it by a neural network and
+learns it by regression, without differentiating through the numerical
+solution of the flow equation <a href="#ref-LipmanEtAl2023">[2]</a>.
+Related formulations include rectified flow <a
+href="#ref-LiuGongLiu2023">[7]</a>. They have been used for
+high-resolution image synthesis <a href="#ref-EsserEtAl2024">[8]</a>,
+smaller one-step image generators <a href="#ref-ZhuEtAl2024">[9]</a>,
+and image editing <a href="#ref-AvrahamiEtAl2025">[10]</a>. Applications
+also include speech generation with Voicebox <a
+href="#ref-LeEtAl2023">[11]</a>, speech and sound generation with
+Audiobox <a href="#ref-VyasEtAl2023">[12]</a>, video and audio
+generation with Movie Gen <a href="#ref-PolyakEtAl2024">[13]</a>, and
+audio-driven portrait animation with FLOAT <a
+href="#ref-KiEtAl2025">[14]</a>.</p>
+<section id="subsec:regression-sampling" class="level3"
+data-number="2.1">
+<h3 data-number="2.1"><span class="header-section-number">2.1</span>
+Training and sampling</h3>
+<section id="training." class="level5" data-number="2.1.0.1">
+<h5 data-number="2.1.0.1"><span
+class="header-section-number">2.1.0.1</span> Training.</h5>
+<p>We use the data-to-initial time convention for training, and reverse
+it when sampling. A neural network
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>v</mi><mi>θ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo>,</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">v_\theta(t,y)</annotation></semantics></math>
+represents the velocity in this convention. Flow Matching allows several
+choices of conditional probability paths; here we use independent
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>∼</mo><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub></mrow><annotation encoding="application/x-tex">X\sim p_{\mathrm{data}}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Z</mi><mo>∼</mo><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">Z\sim p_{\mathrm{init}}</annotation></semantics></math>
+and the linear interpolation
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>t</mi></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi>X</mi><mo>+</mo><mi>t</mi><mi>Z</mi><mo>,</mo><mspace width="2.0em"></mspace><msub><mover><mi>X</mi><mo accent="true">̇</mo></mover><mi>t</mi></msub><mo>=</mo><mi>Z</mi><mo>−</mo><mi>X</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">X_t=(1-t)X+tZ,\qquad \dot X_t=Z-X.</annotation></semantics></math>
+With
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+sampled uniformly on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[0,1]</annotation></semantics></math>,
+independently of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>Z</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(X,Z)</annotation></semantics></math>,
+the conditional regression loss is <span
+id="eq:fm-training-loss"></span><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">ℒ</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi mathvariant="double-struck">𝔼</mi><mrow><mi>t</mi><mo>,</mo><mi>X</mi><mo>,</mo><mi>Z</mi></mrow></msub><mspace width="-0.167em"></mspace><mo stretchy="false" form="prefix">[</mo><mo stretchy="false" form="postfix">∥</mo><msub><mi>v</mi><mi>θ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo>,</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi>X</mi><mo>+</mo><mi>t</mi><mi>Z</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mo stretchy="false" form="prefix">(</mo><mi>Z</mi><mo>−</mo><mi>X</mi><mo stretchy="false" form="postfix">)</mo><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup><mo stretchy="false" form="postfix">]</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+\label{eq:fm-training-loss}
+\mathcal L(\theta)
+=\mathbb E_{t,X,Z}\![
+\|v_\theta(t,(1-t)X+tZ)-(Z-X)\|^2].
+\end{equation}</annotation></semantics></math><span class="equation-number">(1)</span> Training is relatively
+simple: evaluating the expectation requires sampling
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Z</mi><annotation encoding="application/x-tex">Z</annotation></semantics></math>
+from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><annotation encoding="application/x-tex">p_{\mathrm{init}}</annotation></semantics></math>,
+drawing
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+from the available data, and sampling
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+uniformly in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[0,1]</annotation></semantics></math>.
+These draws are independent. The loss is estimated on minibatches and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>
+is updated by stochastic gradient methods. The target
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Z</mi><mo>−</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">Z-X</annotation></semantics></math>
+is directly available, so no ODE simulation is needed during training.
+The linear interpolation is one choice within the conditional Flow
+Matching framework <a href="#ref-LipmanEtAl2023">[2]</a>.</p>
+<p>At the population level, minimisation over square-integrable fields
+gives <span
+id="eq:fm-population-target"></span><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>v</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi mathvariant="double-struck">𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>Z</mi><mo>−</mo><mi>X</mi><mo>∣</mo><msub><mi>X</mi><mi>t</mi></msub><mo>=</mo><mi>y</mi><mo stretchy="false" form="postfix">]</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+\label{eq:fm-population-target}
+v_t(y)=\mathbb E[Z-X\mid X_t=y].
+\end{equation}</annotation></semantics></math><span class="equation-number">(2)</span> This follows from the
+conditional-mean characterisation of least-squares regression.</p>
+</section>
+<section id="sampling." class="level5" data-number="2.1.0.2">
+<h5 data-number="2.1.0.2"><span
+class="header-section-number">2.1.0.2</span> Sampling.</h5>
+<p>We draw
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mn>0</mn></msub><mo>∼</mo><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">Y_0\sim p_{\mathrm{init}}</annotation></semantics></math>
+and integrate the learned velocity in reverse time:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mi>d</mi><msub><mi>Y</mi><mi>s</mi></msub></mrow><mrow><mi>d</mi><mi>s</mi></mrow></mfrac><mo>=</mo><mi>−</mi><msub><mi>v</mi><mi>θ</mi></msub><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>s</mi><mo>,</mo><msub><mi>Y</mi><mi>s</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><mn>0</mn><mo>≤</mo><mi>s</mi><mo>≤</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">\frac{dY_s}{ds}=-v_\theta(1-s,Y_s),\qquad 0\leq s\leq1.</annotation></semantics></math>
+The generative flow
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ϕ</mi><mi>s</mi></msub><annotation encoding="application/x-tex">\phi_s</annotation></semantics></math>
+introduced above therefore uses the velocity
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><msub><mi>v</mi><mi>θ</mi></msub><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>s</mi><mo>,</mo><mi>⋅</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">-v_\theta(1-s,\cdot)</annotation></semantics></math>,
+and its endpoint gives the model distribution
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>ϕ</mi><mn>1</mn></msub><msub><mo stretchy="false" form="postfix">)</mo><mi>#</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\phi_1)_\#(p_{\mathrm{init}}\,dx)</annotation></semantics></math>.
+In practice, the integration is performed with a numerical solver, such
+as explicit Euler or a Runge–Kutta method.</p>
+</section>
+</section>
+<section id="subsec:continuity" class="level3" data-number="2.2">
+<h3 data-number="2.2"><span class="header-section-number">2.2</span>
+Velocity fields and density evolution</h3>
+<p>Consider a smooth velocity field
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>v</mi><mi>t</mi></msub><annotation encoding="application/x-tex">v_t</annotation></semantics></math>
+and its flow
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ϕ</mi><mi>t</mi></msub><annotation encoding="application/x-tex">\phi_t</annotation></semantics></math>,
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>∂</mi><mi>t</mi></msub><msub><mi>ϕ</mi><mi>t</mi></msub><mo>=</mo><msub><mi>v</mi><mi>t</mi></msub><mo>∘</mo><msub><mi>ϕ</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">\partial_t\phi_t=v_t\circ\phi_t</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ϕ</mi><mn>0</mn></msub><mo>=</mo><mi mathvariant="normal">Id</mi></mrow><annotation encoding="application/x-tex">\phi_0=\operatorname{Id}</annotation></semantics></math>.
+Assume that this flow is a diffeomorphism and that
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mi>t</mi></msub><annotation encoding="application/x-tex">p_t</annotation></semantics></math>
+is a smooth transported density. For a bounded domain
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Ω</mi><annotation encoding="application/x-tex">\Omega</annotation></semantics></math>
+with smooth boundary, define the moving domain
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="normal">Ω</mi><mi>t</mi></msub><mo>=</mo><msub><mi>ϕ</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">Ω</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\Omega_t=\phi_t(\Omega).</annotation></semantics></math>
+Preservation of mass gives
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∫</mo><msub><mi mathvariant="normal">Ω</mi><mi>t</mi></msub></msub><msub><mi>p</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>d</mi><mi>y</mi><mo>=</mo><msub><mo>∫</mo><mi mathvariant="normal">Ω</mi></msub><msub><mi>p</mi><mn>0</mn></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">\int_{\Omega_t}p_t(y)\,dy=\int_{\Omega}p_0(x)\,dx.</annotation></semantics></math>
+Differentiating with Reynolds’ transport theorem yields
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>=</mo><mfrac><mi>d</mi><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><msub><mo>∫</mo><msub><mi mathvariant="normal">Ω</mi><mi>t</mi></msub></msub><msub><mi>p</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>d</mi><mi>y</mi><mo>=</mo><msub><mo>∫</mo><msub><mi mathvariant="normal">Ω</mi><mi>t</mi></msub></msub><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><msub><mi>∂</mi><mi>t</mi></msub><msub><mi>p</mi><mi>t</mi></msub><mo>+</mo><mrow><mi mathvariant="normal">div</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mi>t</mi></msub><msub><mi>v</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>d</mi><mi>y</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">0=\frac{d}{dt}\int_{\Omega_t}p_t(y)\,dy
+=\int_{\Omega_t}\bigl(\partial_t p_t+\mathop{\mathrm{div}}(p_tv_t)\bigr)(y)\,dy.</annotation></semantics></math>
+Since this holds for every such domain, we obtain the continuity
+equation
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>∂</mi><mi>t</mi></msub><msub><mi>p</mi><mi>t</mi></msub><mo>+</mo><mrow><mi mathvariant="normal">div</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mi>t</mi></msub><msub><mi>v</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">\partial_t p_t+\mathop{\mathrm{div}}(p_tv_t)=0.</annotation></semantics></math></p>
+<p>This equation links the temporal derivative of the density
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mi>t</mi></msub><annotation encoding="application/x-tex">p_t</annotation></semantics></math>
+to the velocity field transporting it. The Wasserstein–Otto metric will
+rely on this relation to measure the kinetic cost of a density
+variation; we return to it in Section <a
+href="#sec:geometric-comparison">4</a>.</p>
+<p>Figure <a href="#fig:reynolds-transport">1</a> illustrates this
+preservation of mass in a domain moving with the flow.</p>
+<figure id="fig:reynolds-transport" data-latex-placement="H">
+<img alt="Figure 1. A density and a material domain transported by a smooth flow. The red points remain in Ω t = ϕ t ( Ω ) \Omega_t=\phi_t(\Omega) , whose probability mass is constant. Reynolds’ transport theorem gives ∂ t p t + div ⁡ ( p t v t ) = 0 \partial_t p_t+\mathop{\mathrm{div}}(p_tv_t)=0 . Adapted from [23] ." width="2400" height="757" loading="lazy" src="assets/reynolds_transport_probability.jpg">
+<figcaption>Figure 1. A density and a material domain transported by a smooth
+flow. The red points remain in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="normal">Ω</mi><mi>t</mi></msub><mo>=</mo><msub><mi>ϕ</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">Ω</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\Omega_t=\phi_t(\Omega)</annotation></semantics></math>,
+whose probability mass is constant. Reynolds’ transport theorem gives
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>∂</mi><mi>t</mi></msub><msub><mi>p</mi><mi>t</mi></msub><mo>+</mo><mrow><mi mathvariant="normal">div</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mi>t</mi></msub><msub><mi>v</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\partial_t p_t+\mathop{\mathrm{div}}(p_tv_t)=0</annotation></semantics></math>.
+Adapted from <a href="#ref-Guilbert2026Atlas">[23]</a>.</figcaption>
+</figure>
+</section>
+</section>
+<section id="sec:independent-paths" class="level2" data-number="3">
+<h2 data-number="3"><span class="header-section-number">3</span>
+Probability paths under independent interpolation</h2>
+<p>We consider a Euclidean space
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo>≃</mo><msup><mi mathvariant="double-struck">ℝ</mi><mi>d</mi></msup></mrow><annotation encoding="application/x-tex">E\simeq\mathbb{R}^d</annotation></semantics></math>,
+with its Lebesgue measure, and two densities
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><mo>,</mo><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><mo>∈</mo><msub><mi mathvariant="script">𝒫</mi><mo>+</mo></msub><mo stretchy="false" form="prefix">(</mo><mi>E</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p_{\mathrm{data}},p_{\mathrm{init}}\in\mathcal{P}_{+}(E)</annotation></semantics></math>
+with finite second moments. Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Z</mi><annotation encoding="application/x-tex">Z</annotation></semantics></math>
+be independent random variables with densities
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><annotation encoding="application/x-tex">p_{\mathrm{data}}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><annotation encoding="application/x-tex">p_{\mathrm{init}}</annotation></semantics></math>,
+respectively. We study the interpolation <span
+id="eq:data-noise-interpolation"></span><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>t</mi></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi>X</mi><mo>+</mo><mi>t</mi><mi>Z</mi><mo>,</mo><mspace width="2.0em"></mspace><mn>0</mn><mo>≤</mo><mi>t</mi><mo>≤</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+\label{eq:data-noise-interpolation}
+X_t=(1-t)X+tZ,\qquad 0\leq t\leq1.
+\end{equation}</annotation></semantics></math><span class="equation-number">(3)</span> Here time runs from the
+data distribution to the initial distribution:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mn>0</mn></msub><mo>=</mo><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub></mrow><annotation encoding="application/x-tex">p_0=p_{\mathrm{data}}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mn>1</mn></msub><mo>=</mo><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">p_1=p_{\mathrm{init}}</annotation></semantics></math>.
+The generative direction is obtained by reversing time. Independence is
+part of the construction; a different coupling of the same endpoints may
+give a different density path.</p>
+<section id="subsec:convolution" class="level3" data-number="3.1">
+<h3 data-number="3.1"><span class="header-section-number">3.1</span>
+Contracted densities and convolution</h3>
+<p><strong>The interpolation map and its fibres.</strong> For fixed
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>,
+introduce the linear map
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ψ</mi><mi>t</mi></msub><mo>:</mo><mi>E</mi><mo>×</mo><mi>E</mi><mo>→</mo><mi>E</mi><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>ψ</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi>x</mi><mo>+</mo><mi>t</mi><mi>z</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">\psi_t:E\times E\longrightarrow E,\qquad
+\psi_t(x,z)=(1-t)x+tz.</annotation></semantics></math> The law of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mi>t</mi></msub><annotation encoding="application/x-tex">X_t</annotation></semantics></math>
+is the push-forward of the product measure
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi><mspace width="0.167em"></mspace><mi>d</mi><mi>z</mi></mrow><annotation encoding="application/x-tex">p_{\mathrm{data}}(x)p_{\mathrm{init}}(z)\,dx\,dz</annotation></semantics></math>
+by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ψ</mi><mi>t</mi></msub><annotation encoding="application/x-tex">\psi_t</annotation></semantics></math>.
+In orthonormal coordinates its differential has matrix
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>J</mi><mi>t</mi></msub><mo>:=</mo><mi>D</mi><msub><mi>ψ</mi><mi>t</mi></msub><mo>=</mo><mrow><mi mathvariant="normal">Mat</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>d</mi><msub><mi>ψ</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi mathvariant="normal">Id</mi></mtd><mtd columnalign="center" style="text-align: center"><mi>t</mi><mi mathvariant="normal">Id</mi></mtd></mtr></mtable><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">J_t:=D\psi_t=\mathop{\mathrm{Mat}}(d\psi_t)
+=\begin{pmatrix}(1-t)\operatorname{Id}&amp;t\operatorname{Id}\end{pmatrix}.</annotation></semantics></math>
+Thus
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ψ</mi><mi>t</mi></msub><annotation encoding="application/x-tex">\psi_t</annotation></semantics></math>
+is surjective, and its normal volume factor is <span
+id="eq:normal-jacobian"></span><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mi>t</mi></msub><mo>:=</mo><msqrt><mrow><mrow><mi mathvariant="normal">det</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>J</mi><mi>t</mi></msub><msubsup><mi>J</mi><mi>t</mi><mi mathvariant="sans-serif">𝖳</mi></msubsup><mo stretchy="false" form="postfix">)</mo></mrow></msqrt><mo>=</mo><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo>+</mo><msup><mi>t</mi><mn>2</mn></msup><msup><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo><mrow><mi>d</mi><mi>/</mi><mn>2</mn></mrow></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+\label{eq:normal-jacobian}
+A_t:=\sqrt{\det(J_tJ_t^{\mathsf T})}
+=\bigl((1-t)^2+t^2\bigr)^{d/2}.
+\end{equation}</annotation></semantics></math><span class="equation-number">(4)</span> The density
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>t</mi></msub><mo>=</mo><msub><mi>p</mi><msub><mi>X</mi><mi>t</mi></msub></msub></mrow><annotation encoding="application/x-tex">p_t=p_{X_t}</annotation></semantics></math>
+is obtained by integrating the joint density of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>Z</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(X,Z)</annotation></semantics></math>
+over the fibre
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ψ</mi><mi>t</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\psi_t^{-1}(y)</annotation></semantics></math>.
+Applying the coarea formula to this push-forward <a
+href="#ref-NicolaescuCoarea">[1]</a>, we obtain <span
+id="eq:fibre-density"></span><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mn>1</mn><msub><mi>A</mi><mi>t</mi></msub></mfrac><msub><mo>∫</mo><mrow><msubsup><mi>ψ</mi><mi>t</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo></mrow></msub><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>d</mi><msup><mi mathvariant="script">ℋ</mi><mi>d</mi></msup><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+\label{eq:fibre-density}
+p_t(y)=\frac1{A_t}
+\int_{\psi_t^{-1}(y)}p_{\mathrm{data}}(x)p_{\mathrm{init}}(z)\,
+ d\mathcal H^d(x,z).
+\end{equation}</annotation></semantics></math><span class="equation-number">(5)</span> Here
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi mathvariant="script">ℋ</mi><mi>d</mi></msup><annotation encoding="application/x-tex">\mathcal H^d</annotation></semantics></math>
+is the induced Euclidean volume on the fibre, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mi>t</mi></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">A_t&gt;0</annotation></semantics></math>
+is the constant normal volume factor computed in <a
+href="#eq:normal-jacobian">(4)</a>.</p>
+<p>For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>&lt;</mo><mi>t</mi><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">0&lt;t&lt;1</annotation></semantics></math>,
+parametrise the fibre by
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mrow><mi>t</mi><mo>,</mo><mi>y</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>,</mo><mfrac><mrow><mi>y</mi><mo>−</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi>x</mi></mrow><mi>t</mi></mfrac><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">F_{t,y}(x)=(x,\frac{y-(1-t)x}{t}).</annotation></semantics></math>
+Writing
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><msub><mi>F</mi><mrow><mi>t</mi><mo>,</mo><mi>y</mi></mrow></msub></mrow><annotation encoding="application/x-tex">DF_{t,y}</annotation></semantics></math>
+for its Jacobian matrix in orthonormal coordinates, its induced volume
+element is
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msqrt><mrow><mrow><mi mathvariant="normal">det</mi><mo>&#8289;</mo></mrow><mspace width="-0.167em"></mspace><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="prefix">(</mo><mi>D</mi><msub><mi>F</mi><mrow><mi>t</mi><mo>,</mo><mi>y</mi></mrow></msub><msup><mo stretchy="false" form="postfix">)</mo><mi mathvariant="sans-serif">𝖳</mi></msup><mi>D</mi><msub><mi>F</mi><mrow><mi>t</mi><mo>,</mo><mi>y</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow></msqrt><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>+</mo><mfrac><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup></mrow><msup><mi>t</mi><mn>2</mn></msup></mfrac><msup><mo stretchy="false" form="postfix">)</mo><mrow><mi>d</mi><mi>/</mi><mn>2</mn></mrow></msup><mi>d</mi><mi>x</mi><mo>=</mo><mfrac><msub><mi>A</mi><mi>t</mi></msub><msup><mi>t</mi><mi>d</mi></msup></mfrac><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">\sqrt{\det\!((DF_{t,y})^{\mathsf T}DF_{t,y})}\,dx
+=(1+\frac{(1-t)^2}{t^2})^{d/2}dx
+=\frac{A_t}{t^d}\,dx.</annotation></semantics></math> Substitution into
+<a href="#eq:fibre-density">(5)</a> cancels
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mi>t</mi></msub><annotation encoding="application/x-tex">A_t</annotation></semantics></math>
+and yields <span
+id="eq:convolution-integral"></span><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mo>∫</mo><mi>E</mi></msub><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><msup><mi>t</mi><mrow><mi>−</mi><mi>d</mi></mrow></msup><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><mspace width="-0.167em"></mspace><mo stretchy="false" form="prefix">(</mo><mfrac><mrow><mi>y</mi><mo>−</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi>x</mi></mrow><mi>t</mi></mfrac><mo stretchy="false" form="postfix">)</mo><mi>d</mi><mi>x</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+\label{eq:convolution-integral}
+p_t(y)=\int_E p_{\mathrm{data}}(x)\,t^{-d}
+p_{\mathrm{init}}\!(\frac{y-(1-t)x}{t})dx.
+\end{equation}</annotation></semantics></math><span class="equation-number">(6)</span></p>
+<p><strong>Convolution form.</strong> Rescaling the integration variable
+in <a href="#eq:convolution-integral">(6)</a> gives <span
+id="eq:contracted-convolution"></span><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><mspace width="0.167em"></mspace><msub><mi>p</mi><mi>t</mi></msub><mo>=</mo><mo stretchy="false" form="prefix">[</mo><mfrac><mn>1</mn><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><msup><mo stretchy="false" form="postfix">)</mo><mi>d</mi></msup></mrow></mfrac><mspace width="0.167em"></mspace><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><mspace width="-0.167em"></mspace><mo stretchy="false" form="prefix">(</mo><mfrac><mo>⋅</mo><mrow><mn>1</mn><mo>−</mo><mi>t</mi></mrow></mfrac><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo><mo>*</mo><mo stretchy="false" form="prefix">[</mo><mfrac><mn>1</mn><msup><mi>t</mi><mi>d</mi></msup></mfrac><mspace width="0.167em"></mspace><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><mspace width="-0.167em"></mspace><mo stretchy="false" form="prefix">(</mo><mfrac><mo>⋅</mo><mi>t</mi></mfrac><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo><mo>,</mo><mspace width="2.0em"></mspace><mn>0</mn><mo>&lt;</mo><mi>t</mi><mo>&lt;</mo><mn>1</mn><mi>.</mi><mspace width="0.167em"></mspace></mrow></menclose><annotation encoding="application/x-tex">\begin{equation}
+\label{eq:contracted-convolution}
+\boxed{\,
+p_t=
+[\frac{1}{(1-t)^d}\,p_{\mathrm{data}}\!(\frac{\cdot}{1-t})]
+*
+[\frac{1}{t^d}\,p_{\mathrm{init}}\!(\frac{\cdot}{t})],
+\qquad 0&lt;t&lt;1.
+\,}
+\end{equation}</annotation></semantics></math><span class="equation-number">(7)</span> The initial and data
+distributions are contracted by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">1-t</annotation></semantics></math>,
+respectively, and then convolved. When
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+is close to zero,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><annotation encoding="application/x-tex">p_{\mathrm{data}}</annotation></semantics></math>
+is almost unchanged, while the contracted initial distribution is close
+to a Dirac mass at the origin. The convolution is therefore close to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><annotation encoding="application/x-tex">p_{\mathrm{data}}</annotation></semantics></math>.
+When
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+is close to one, we have the opposite phenomenon: the contracted data
+distribution is close to a Dirac mass at the origin, while
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><annotation encoding="application/x-tex">p_{\mathrm{init}}</annotation></semantics></math>
+is almost unchanged. The convolution is then close to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><annotation encoding="application/x-tex">p_{\mathrm{init}}</annotation></semantics></math>.
+Figure <a href="#fig:contracted-convolution-2d">2</a> illustrates this
+evolution.</p>
+<figure id="fig:contracted-convolution-2d" data-latex-placement="H">
+<img alt="Figure 2. Evolution of p t p_t from a Gaussian mixture p d a t a p_{\mathrm{data}} to the Gaussian p i n i t = 𝒩 ( 0 , Id ⁡ ) p_{\mathrm{init}}=\mathcal N(0,\operatorname{Id}) . Colours and contours represent the density at eight times from t = 0 t=0 (top left) to t = 1 t=1 (bottom right)." width="2400" height="1238" loading="lazy" src="assets/contracted_convolution_2d.jpg">
+<figcaption>Figure 2. Evolution of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mi>t</mi></msub><annotation encoding="application/x-tex">p_t</annotation></semantics></math>
+from a Gaussian mixture
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><annotation encoding="application/x-tex">p_{\mathrm{data}}</annotation></semantics></math>
+to the Gaussian
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><mo>=</mo><mi mathvariant="script">𝒩</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mrow><mi mathvariant="normal">Id</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p_{\mathrm{init}}=\mathcal N(0,\operatorname{Id})</annotation></semantics></math>.
+Colours and contours represent the density at eight times from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">t=0</annotation></semantics></math>
+(top left) to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t=1</annotation></semantics></math>
+(bottom right).</figcaption>
+</figure>
+</section>
+<section id="subsec:prior-velocity" class="level3" data-number="3.2">
+<h3 data-number="3.2"><span class="header-section-number">3.2</span> The
+initial distribution and the marginal velocity</h3>
+<p>For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>&lt;</mo><mi>t</mi><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">0&lt;t&lt;1</annotation></semantics></math>,
+assume that the endpoint densities are smooth and rapidly decreasing, so
+that we may differentiate under the integral in <a
+href="#eq:convolution-integral">(6)</a>. Directly, <span
+id="eq:density-time-derivative"></span><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><msub><mi>∂</mi><mi>t</mi></msub><msub><mi>p</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><msub><mo>∫</mo><mi>E</mi></msub><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><msub><mi>∂</mi><mi>t</mi></msub><mspace width="-0.167em"></mspace><mo stretchy="false" form="prefix">[</mo><mfrac><mn>1</mn><msup><mi>t</mi><mi>d</mi></msup></mfrac><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><mspace width="-0.167em"></mspace><mo stretchy="false" form="prefix">(</mo><mfrac><mrow><mi>y</mi><mo>−</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi>x</mi></mrow><mi>t</mi></mfrac><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo><mi>d</mi><mi>x</mi></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><msub><mo>∫</mo><mi>E</mi></msub><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">[</mo><mi>−</mi><mfrac><mi>d</mi><msup><mi>t</mi><mrow><mi>d</mi><mo>+</mo><mn>1</mn></mrow></msup></mfrac><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><mspace width="-0.167em"></mspace><mo stretchy="false" form="prefix">(</mo><mfrac><mrow><mi>y</mi><mo>−</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi>x</mi></mrow><mi>t</mi></mfrac><mo stretchy="false" form="postfix">)</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mi>+</mi><mfrac><mn>1</mn><msup><mi>t</mi><mi>d</mi></msup></mfrac><mo stretchy="false" form="prefix">⟨</mo><mi>∇</mi><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><mspace width="-0.167em"></mspace><mo stretchy="false" form="prefix">(</mo><mfrac><mrow><mi>y</mi><mo>−</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi>x</mi></mrow><mi>t</mi></mfrac><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mfrac><mrow><mi>x</mi><mo>−</mo><mi>y</mi></mrow><msup><mi>t</mi><mn>2</mn></msup></mfrac><mo stretchy="false" form="postfix">⟩</mo><mo stretchy="false" form="postfix">]</mo><mi>d</mi><mi>x</mi><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{align}
+\partial_t p_t(y)
+&amp;=\int_E p_{\mathrm{data}}(x)\,
+\partial_t\![
+\frac1{t^d}p_{\mathrm{init}}\!(\frac{y-(1-t)x}{t})
+]dx\\
+&amp;=\int_E p_{\mathrm{data}}(x)[
+-\frac{d}{t^{d+1}}p_{\mathrm{init}}\!(\frac{y-(1-t)x}{t})
+\\
+&amp;
++\frac1{t^d}\langle
+\nabla p_{\mathrm{init}}\!(\frac{y-(1-t)x}{t}),
+\frac{x-y}{t^2}\rangle
+]dx.
+\label{eq:density-time-derivative}
+\end{align}</annotation></semantics></math><span class="equation-number">(8)</span></p>
+<p>We now use the continuity equation derived in Section <a
+href="#subsec:continuity">2.2</a>,
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>∂</mi><mi>t</mi></msub><msub><mi>p</mi><mi>t</mi></msub><mo>+</mo><mrow><mi mathvariant="normal">div</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mi>t</mi></msub><msub><mi>v</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\partial_t p_t+\mathop{\mathrm{div}}(p_tv_t)=0</annotation></semantics></math>
+to find a velocity field transporting this density path. Writing the
+result of <a href="#eq:density-time-derivative">(8)</a> as a divergence
+gives
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><msub><mi>∂</mi><mi>t</mi></msub><msub><mi>p</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><mi>−</mi><msub><mrow><mi mathvariant="normal">div</mi><mo>&#8289;</mo></mrow><mi>y</mi></msub><mspace width="-0.167em"></mspace><mo stretchy="false" form="prefix">(</mo><msub><mo>∫</mo><mi>E</mi></msub><mfrac><mrow><mi>y</mi><mo>−</mo><mi>x</mi></mrow><mi>t</mi></mfrac><mspace width="0.167em"></mspace><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mfrac><mn>1</mn><msup><mi>t</mi><mi>d</mi></msup></mfrac><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><mspace width="-0.167em"></mspace><mo stretchy="false" form="prefix">(</mo><mfrac><mrow><mi>y</mi><mo>−</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi>x</mi></mrow><mi>t</mi></mfrac><mo stretchy="false" form="postfix">)</mo><mi>d</mi><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{align*}
+\partial_t p_t(y)
+&amp;=-\mathop{\mathrm{div}}_y\!(
+\int_E\frac{y-x}{t}\,p_{\mathrm{data}}(x)
+\frac1{t^d}p_{\mathrm{init}}\!(\frac{y-(1-t)x}{t})dx
+).
+\end{align*}</annotation></semantics></math> We may therefore choose the
+flux
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><msub><mi>v</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mo>∫</mo><mi>E</mi></msub><mfrac><mrow><mi>y</mi><mo>−</mo><mi>x</mi></mrow><mi>t</mi></mfrac><mspace width="0.167em"></mspace><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mfrac><mn>1</mn><msup><mi>t</mi><mi>d</mi></msup></mfrac><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><mspace width="-0.167em"></mspace><mo stretchy="false" form="prefix">(</mo><mfrac><mrow><mi>y</mi><mo>−</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi>x</mi></mrow><mi>t</mi></mfrac><mo stretchy="false" form="postfix">)</mo><mi>d</mi><mi>x</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">p_t(y)v_t(y)=\int_E\frac{y-x}{t}\,p_{\mathrm{data}}(x)
+\frac1{t^d}p_{\mathrm{init}}\!(\frac{y-(1-t)x}{t})dx.</annotation></semantics></math>
+Dividing by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p_t(y)</annotation></semantics></math>
+and using <a href="#eq:convolution-integral">(6)</a>, we obtain <span
+id="eq:independent-prior-velocity"></span><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><mspace width="0.167em"></mspace><msub><mi>v</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><msub><mo>∫</mo><mi>E</mi></msub><mfrac><mrow><mi>y</mi><mo>−</mo><mi>x</mi></mrow><mi>t</mi></mfrac><mspace width="0.167em"></mspace><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><msup><mi>t</mi><mrow><mi>−</mi><mi>d</mi></mrow></msup><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><mspace width="-0.167em"></mspace><mo stretchy="false" form="prefix">(</mo><mfrac><mrow><mi>y</mi><mo>−</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi>x</mi></mrow><mi>t</mi></mfrac><mo stretchy="false" form="postfix">)</mo><mi>d</mi><mi>x</mi></mrow><mrow><msub><mo>∫</mo><mi>E</mi></msub><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><msup><mi>t</mi><mrow><mi>−</mi><mi>d</mi></mrow></msup><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><mspace width="-0.167em"></mspace><mo stretchy="false" form="prefix">(</mo><mfrac><mrow><mi>y</mi><mo>−</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi>x</mi></mrow><mi>t</mi></mfrac><mo stretchy="false" form="postfix">)</mo><mi>d</mi><mi>x</mi></mrow></mfrac><mi>.</mi><mspace width="0.167em"></mspace></mrow></menclose><annotation encoding="application/x-tex">\begin{equation}
+\label{eq:independent-prior-velocity}
+\boxed{\,
+ v_t(y)=
+ \frac{\displaystyle\int_E\frac{y-x}{t}\,p_{\mathrm{data}}(x)
+ t^{-d}p_{\mathrm{init}}\!(\frac{y-(1-t)x}{t})dx}
+ {\displaystyle\int_E p_{\mathrm{data}}(x)
+ t^{-d}p_{\mathrm{init}}\!(\frac{y-(1-t)x}{t})dx}.
+\,}
+\end{equation}</annotation></semantics></math><span class="equation-number">(9)</span></p>
+<p>To interpret this field, first consider the joint law of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo>,</mo><msub><mi>X</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(X,X_t)</annotation></semantics></math>.
+The change of variables
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo><mo>↦</mo><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>,</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi>x</mi><mo>+</mo><mi>t</mi><mi>z</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(x,z)\mapsto(x,(1-t)x+tz)</annotation></semantics></math>
+has determinant
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>t</mi><mi>d</mi></msup><annotation encoding="application/x-tex">t^d</annotation></semantics></math>,
+so its joint density is
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>X</mi><mo>,</mo><msub><mi>X</mi><mi>t</mi></msub></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><msup><mi>t</mi><mi>d</mi></msup></mfrac><mspace width="0.167em"></mspace><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><mspace width="-0.167em"></mspace><mo stretchy="false" form="prefix">(</mo><mfrac><mrow><mi>y</mi><mo>−</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi>x</mi></mrow><mi>t</mi></mfrac><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">p_{X,X_t}(x,y)=\frac{p_{\mathrm{data}}(x)}{t^d}\,
+p_{\mathrm{init}}\!(\frac{y-(1-t)x}{t}).</annotation></semantics></math>
+Dividing by the marginal density
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><msub><mi>X</mi><mi>t</mi></msub></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi>p</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p_{X_t}(y)=p_t(y)</annotation></semantics></math>
+gives
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>X</mi><mo>∣</mo><msub><mi>X</mi><mi>t</mi></msub><mo>=</mo><mi>y</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><msub><mi>p</mi><mrow><mi>X</mi><mo>,</mo><msub><mi>X</mi><mi>t</mi></msub></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><msub><mi>p</mi><msub><mi>X</mi><mi>t</mi></msub></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mo>=</mo><mfrac><mrow><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><msup><mi>t</mi><mi>d</mi></msup><msub><mi>p</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mspace width="0.167em"></mspace><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><mspace width="-0.167em"></mspace><mo stretchy="false" form="prefix">(</mo><mfrac><mrow><mi>y</mi><mo>−</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi>x</mi></mrow><mi>t</mi></mfrac><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">p_{X\mid X_t=y}(x)=\frac{p_{X,X_t}(x,y)}{p_{X_t}(y)}
+=\frac{p_{\mathrm{data}}(x)}{t^d p_t(y)}\,
+p_{\mathrm{init}}\!(\frac{y-(1-t)x}{t}).</annotation></semantics></math>
+On the fibre
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi>x</mi><mo>+</mo><mi>t</mi><mi>z</mi><mo>=</mo><mi>y</mi></mrow><annotation encoding="application/x-tex">(1-t)x+tz=y</annotation></semantics></math>,
+we have
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo>−</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mi>t</mi><mo>=</mo><mi>z</mi><mo>−</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">(y-x)/t=z-x</annotation></semantics></math>.
+Hence <span
+id="eq:conditional-velocity-example"></span><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>v</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><mi>y</mi><mo>−</mo><mi mathvariant="double-struck">𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>X</mi><mo>∣</mo><msub><mi>X</mi><mi>t</mi></msub><mo>=</mo><mi>y</mi><mo stretchy="false" form="postfix">]</mo></mrow><mi>t</mi></mfrac><mo>=</mo><mi mathvariant="double-struck">𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>Z</mi><mo>−</mo><mi>X</mi><mo>∣</mo><msub><mi>X</mi><mi>t</mi></msub><mo>=</mo><mi>y</mi><mo stretchy="false" form="postfix">]</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+\label{eq:conditional-velocity-example}
+v_t(y)=\frac{y-\mathbb E[X\mid X_t=y]}{t}
+      =\mathbb E[Z-X\mid X_t=y].
+\end{equation}</annotation></semantics></math><span class="equation-number">(10)</span> This is the marginal
+velocity associated with the conditional straight trajectories, and the
+population target of the velocity regression <a
+href="#ref-LipmanEtAl2023">[2]</a>, <a
+href="#ref-AlbergoBoffiVandenEijnden2025">[3]</a>. Figure <a
+href="#fig:convolution-velocity-2d">3</a> shows this velocity field for
+the same distributions as in Figure <a
+href="#fig:contracted-convolution-2d">2</a>.</p>
+<figure id="fig:convolution-velocity-2d" data-latex-placement="H">
+<img alt="Figure 3. The same Gaussian mixture to Gaussian interpolation, with the marginal velocity v t v_t evaluated on a regular grid of spacing 0.3 0.3 , shown near the density and between the Gaussian components. Arrows point in the data-to-initial-distribution direction; their lengths use the same scale in all panels." width="2400" height="1238" loading="lazy" src="assets/contracted_convolution_velocity_2d.jpg">
+<figcaption>Figure 3. The same Gaussian mixture to Gaussian interpolation, with
+the marginal velocity
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>v</mi><mi>t</mi></msub><annotation encoding="application/x-tex">v_t</annotation></semantics></math>
+evaluated on a regular grid of spacing
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.3</mn><annotation encoding="application/x-tex">0.3</annotation></semantics></math>,
+shown near the density and between the Gaussian components. Arrows point
+in the data-to-initial-distribution direction; their lengths use the
+same scale in all panels.</figcaption>
+</figure>
+<p>These formulas describe the data-to-initial-distribution direction.
+Reversing time gives
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>p</mi><mo accent="true">̃</mo></mover><mi>s</mi></msub><mo>=</mo><msub><mi>p</mi><mrow><mn>1</mn><mo>−</mo><mi>s</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\widetilde p_s=p_{1-s}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>v</mi><mo accent="true">̃</mo></mover><mi>s</mi></msub><mo>=</mo><mi>−</mi><msub><mi>v</mi><mrow><mn>1</mn><mo>−</mo><mi>s</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\widetilde v_s=-v_{1-s}</annotation></semantics></math>.
+Expressions involving
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">1/t</annotation></semantics></math>
+are used only for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>&lt;</mo><mi>t</mi><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">0&lt;t&lt;1</annotation></semantics></math>;
+endpoints must be treated separately.</p>
+<p>To sample in the generative direction, we draw
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Y</mi><mn>0</mn></msub><annotation encoding="application/x-tex">Y_0</annotation></semantics></math>
+from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><annotation encoding="application/x-tex">p_{\mathrm{init}}</annotation></semantics></math>
+and solve
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mi>d</mi><msub><mi>Y</mi><mi>s</mi></msub></mrow><mrow><mi>d</mi><mi>s</mi></mrow></mfrac><mo>=</mo><mi>−</mi><msub><mi>v</mi><mrow><mn>1</mn><mo>−</mo><mi>s</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>Y</mi><mi>s</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><mn>0</mn><mo>≤</mo><mi>s</mi><mo>≤</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">\frac{dY_s}{ds}=-v_{1-s}(Y_s),\qquad 0\leq s\leq1.</annotation></semantics></math>
+This ODE can be integrated with Euler’s method or another numerical
+solver. Figure <a href="#fig:generative-particles">4</a> shows
+trajectories computed with a fourth-order Runge–Kutta scheme.</p>
+<figure id="fig:generative-particles" data-latex-placement="H">
+<img alt="Figure 4. Numerical integration of 150 particles from the Gaussian p i n i t p_{\mathrm{init}} to the mixture p d a t a p_{\mathrm{data}} . Time is reversed: t = 1 − s t=1-s decreases from 1 1 (top left) to 0 0 (bottom right). Coloured curves retain the past trajectories; dots mark current positions. The background shows the exact density p t p_t ." width="2400" height="1242" loading="lazy" src="assets/generative_particle_panels.jpg">
+<figcaption>Figure 4. Numerical integration of 150 particles from the Gaussian
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><annotation encoding="application/x-tex">p_{\mathrm{init}}</annotation></semantics></math>
+to the mixture
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><annotation encoding="application/x-tex">p_{\mathrm{data}}</annotation></semantics></math>.
+Time is reversed:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn><mo>−</mo><mi>s</mi></mrow><annotation encoding="application/x-tex">t=1-s</annotation></semantics></math>
+decreases from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+(top left) to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+(bottom right). Coloured curves retain the past trajectories; dots mark
+current positions. The background shows the exact density
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mi>t</mi></msub><annotation encoding="application/x-tex">p_t</annotation></semantics></math>.</figcaption>
+</figure>
+</section>
+</section>
+<section id="sec:geometric-comparison" class="level2" data-number="4">
+<h2 data-number="4"><span class="header-section-number">4</span>
+Wasserstein–Otto geometry and comparison with geodesics</h2>
+<p>For a broader comparison of Fisher–Rao and Wasserstein–Otto
+geometries, we refer to <a href="#ref-Guilbert2026Atlas">[23]</a>.</p>
+<p>We keep the same endpoints
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><annotation encoding="application/x-tex">p_{\mathrm{data}}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><annotation encoding="application/x-tex">p_{\mathrm{init}}</annotation></semantics></math>,
+with finite second moments, and the same time direction. We now describe
+what would be required of a Wasserstein–Otto geodesic between them.
+Write
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>p</mi><mi>t</mi><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">o</mi></mrow></msubsup><annotation encoding="application/x-tex">p_t^{\mathrm{geo}}</annotation></semantics></math>
+for this reference path, to distinguish it from the independently
+coupled interpolation studied above.</p>
+<section id="subsec:minimum-energy" class="level3" data-number="4.1">
+<h3 data-number="4.1"><span class="header-section-number">4.1</span>
+Tangent space of probability densities</h3>
+<p>We briefly recall the density representation of probability measures.
+On
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo>≃</mo><msup><mi mathvariant="double-struck">ℝ</mi><mi>d</mi></msup></mrow><annotation encoding="application/x-tex">E\simeq\mathbb{R}^d</annotation></semantics></math>,
+a probability measure
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>
+absolutely continuous with respect to Lebesgue measure
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi mathvariant="script">ℒ</mi><mi>d</mi></msup><annotation encoding="application/x-tex">\mathcal L^d</annotation></semantics></math>
+admits a Radon–Nikodym density
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mi>d</mi><mi>P</mi><mi>/</mi><mi>d</mi><msup><mi mathvariant="script">ℒ</mi><mi>d</mi></msup></mrow><annotation encoding="application/x-tex">p=dP/d\mathcal L^d</annotation></semantics></math>,
+so that <a href="#ref-Bogachev2007">[15]</a> (Chapter 3)
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mi>A</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mo>∫</mo><mi>A</mi></msub><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi><mo>,</mo><mspace width="2.0em"></mspace><msub><mo>∫</mo><mi>E</mi></msub><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">P(A)=\int_A p(x)\,dx,\qquad \int_E p(x)\,dx=1</annotation></semantics></math>
+for every Borel set
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo>⊂</mo><mi>E</mi></mrow><annotation encoding="application/x-tex">A\subset E</annotation></semantics></math>.
+We work with the space of strictly positive probability densities
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="script">𝒫</mi><mo>+</mo></msub><mo stretchy="false" form="prefix">(</mo><mi>E</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>p</mi><mo>&gt;</mo><mn>0</mn><mo>:</mo><mspace width="0.222em"></mspace><msub><mo>∫</mo><mi>E</mi></msub><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi><mo>=</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">\mathcal{P}_{+}(E)=\{p&gt;0:\ \int_E p(x)\,dx=1\},</annotation></semantics></math>
+with finite second moments and the regularity required by the following
+computations. In the formal smooth description, a vector in the tangent
+space
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>p</mi></msub><msub><mi mathvariant="script">𝒫</mi><mo>+</mo></msub><mo stretchy="false" form="prefix">(</mo><mi>E</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">T_p\mathcal{P}_{+}(E)</annotation></semantics></math>
+is a density variation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math>
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∫</mo><mi>E</mi></msub><mi>u</mi><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\int_Eu\,dx=0</annotation></semantics></math>;
+along a differentiable probability path,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><msub><mi>∂</mi><mi>t</mi></msub><msub><mi>p</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">u=\partial_t p_t</annotation></semantics></math>
+at the corresponding time <a href="#ref-Otto2001">[4]</a>.</p>
+</section>
+<section id="subsec:velocity-nonuniqueness" class="level3"
+data-number="4.2">
+<h3 data-number="4.2"><span class="header-section-number">4.2</span>
+Nonuniqueness of the transporting velocity</h3>
+<p>For a prescribed density path
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mi>t</mi></msub><annotation encoding="application/x-tex">p_t</annotation></semantics></math>,
+the continuity equation determines
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">div</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mi>t</mi></msub><msub><mi>v</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathop{\mathrm{div}}(p_tv_t)</annotation></semantics></math>.
+Several velocity fields may have the same weighted divergence <a
+href="#ref-Otto2001">[4]</a>, <a
+href="#ref-AmbrosioGigliSavare2008">[16]</a>. Indeed, if
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>v</mi><mi>t</mi></msub><annotation encoding="application/x-tex">v_t</annotation></semantics></math>
+satisfies the continuity equation and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>w</mi><mi>t</mi></msub><annotation encoding="application/x-tex">w_t</annotation></semantics></math>
+satisfies
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">div</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mi>t</mi></msub><msub><mi>w</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0</mn><mo>,</mo></mrow><annotation encoding="application/x-tex">\mathop{\mathrm{div}}(p_tw_t)=0,</annotation></semantics></math>
+then
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>∂</mi><mi>t</mi></msub><msub><mi>p</mi><mi>t</mi></msub><mo>+</mo><mrow><mi mathvariant="normal">div</mi><mo>&#8289;</mo></mrow><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><msub><mi>p</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>v</mi><mi>t</mi></msub><mo>+</mo><msub><mi>w</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo><mo>=</mo><msub><mi>∂</mi><mi>t</mi></msub><msub><mi>p</mi><mi>t</mi></msub><mo>+</mo><mrow><mi mathvariant="normal">div</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mi>t</mi></msub><msub><mi>v</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mrow><mi mathvariant="normal">div</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mi>t</mi></msub><msub><mi>w</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">\partial_t p_t+\mathop{\mathrm{div}}\bigl(p_t(v_t+w_t)\bigr)
+=\partial_t p_t+\mathop{\mathrm{div}}(p_tv_t)+\mathop{\mathrm{div}}(p_tw_t)=0.</annotation></semantics></math>
+Conversely, the difference of two velocity fields representing the same
+density variation has zero weighted divergence. Among admissible fields,
+the WO construction selects a representative of minimum kinetic energy
+<a href="#ref-Otto2001">[4]</a>, <a
+href="#ref-AmbrosioGigliSavare2008">[16]</a>.</p>
+</section>
+<section id="subsec:wo-metric-energy" class="level3" data-number="4.3">
+<h3 data-number="4.3"><span class="header-section-number">4.3</span> The
+Wasserstein–Otto metric and path energy</h3>
+<p>The Wasserstein–Otto metric acts on these tangent vectors. Using the
+continuity equation, its squared norm along a smooth density path is <a
+href="#ref-Otto2001">[4]</a>, <a
+href="#ref-AmbrosioGigliSavare2008">[16]</a> <span
+id="eq:wo-tangent-recall"></span><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><mspace width="0.167em"></mspace><mo stretchy="false" form="postfix">∥</mo><msub><mi>∂</mi><mi>t</mi></msub><msub><mi>p</mi><mi>t</mi></msub><msubsup><mo stretchy="false" form="postfix">∥</mo><mrow><msub><mi>p</mi><mi>t</mi></msub><mo>,</mo><mrow><mi mathvariant="normal">W</mi><mi mathvariant="normal">O</mi></mrow></mrow><mn>2</mn></msubsup><mo>=</mo><munder><mi mathvariant="normal">inf</mi><mrow><mi>v</mi><mo>:</mo><mspace width="0.167em"></mspace><mrow><mi mathvariant="normal">div</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mi>t</mi></msub><mi>v</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>−</mi><msub><mi>∂</mi><mi>t</mi></msub><msub><mi>p</mi><mi>t</mi></msub></mrow></munder><msub><mo>∫</mo><mi>E</mi></msub><mo stretchy="false" form="postfix">∥</mo><mi>v</mi><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup><msub><mi>p</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>d</mi><mi>y</mi><mi>.</mi><mspace width="0.167em"></mspace></mrow></menclose><annotation encoding="application/x-tex">\begin{equation}
+\label{eq:wo-tangent-recall}
+\boxed{\,
+\|\partial_t p_t\|_{p_t,\mathrm{WO}}^2
+=\inf_{v:\,\mathop{\mathrm{div}}(p_tv)=-\partial_t p_t}
+\int_E\|v(y)\|^2p_t(y)\,dy.
+\,}
+\end{equation}</annotation></semantics></math><span class="equation-number">(11)</span></p>
+<section id="weighted-helmholtz-decomposition." class="level5"
+data-number="4.3.0.1">
+<h5 data-number="4.3.0.1"><span
+class="header-section-number">4.3.0.1</span> Weighted Helmholtz
+decomposition.</h5>
+<p>For vector fields in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>L</mi><mn>2</mn></msup><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo>;</mo><mi>E</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">L^2(p;E)</annotation></semantics></math>,
+consider the scalar product
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">⟨</mo><mi>u</mi><mo>,</mo><mi>v</mi><msub><mo stretchy="false" form="postfix">⟩</mo><mrow><msup><mi>L</mi><mn>2</mn></msup><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow></msub><mo>=</mo><msub><mo>∫</mo><mi>E</mi></msub><mi>u</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>⋅</mo><mi>v</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">\langle u,v\rangle_{L^2(p)}=\int_E u(x)\cdot v(x)\,p(x)\,dx.</annotation></semantics></math>
+The weighted Helmholtz decomposition splits a field orthogonally into
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>=</mo><mi>∇</mi><mi>ϕ</mi><mo>+</mo><mi>w</mi><mo>,</mo><mspace width="2.0em"></mspace><mrow><mi mathvariant="normal">div</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mi>w</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0</mn><mo>,</mo><mspace width="2.0em"></mspace><mo stretchy="false" form="prefix">⟨</mo><mi>∇</mi><mi>ϕ</mi><mo>,</mo><mi>w</mi><msub><mo stretchy="false" form="postfix">⟩</mo><mrow><msup><mi>L</mi><mn>2</mn></msup><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow></msub><mo>=</mo><mn>0</mn><mo>;</mo></mrow><annotation encoding="application/x-tex">v=\nabla\phi+w,\qquad \mathop{\mathrm{div}}(pw)=0,\qquad
+\langle\nabla\phi,w\rangle_{L^2(p)}=0;</annotation></semantics></math>
+see <a href="#ref-AmbrosioGigli2013">[17]</a> (Section 6). In the
+general
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>L</mi><mn>2</mn></msup><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">L^2(p)</annotation></semantics></math>
+setting, the gradient component belongs to the closure of smooth
+compactly supported gradients, and the divergence condition is
+distributional. We use
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>∇</mi><mi>ϕ</mi></mrow><annotation encoding="application/x-tex">\nabla\phi</annotation></semantics></math>
+for this component in the smooth setting. Consequently,
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∫</mo><mi>E</mi></msub><mo stretchy="false" form="postfix">∥</mo><mi>v</mi><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup><mi>p</mi><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi><mo>=</mo><msub><mo>∫</mo><mi>E</mi></msub><mo stretchy="false" form="postfix">∥</mo><mi>∇</mi><mi>ϕ</mi><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup><mi>p</mi><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi><mo>+</mo><msub><mo>∫</mo><mi>E</mi></msub><mo stretchy="false" form="postfix">∥</mo><mi>w</mi><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup><mi>p</mi><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">\int_E\|v\|^2p\,dx
+=\int_E\|\nabla\phi\|^2p\,dx+\int_E\|w\|^2p\,dx.</annotation></semantics></math>
+Applied at each time with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><msub><mi>p</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">p=p_t</annotation></semantics></math>,
+this decomposition identifies the minimiser in <a
+href="#eq:wo-tangent-recall">(11)</a>: the gradient component represents
+the same density variation and has minimum kinetic energy <a
+href="#ref-AmbrosioGigli2013">[17]</a>.</p>
+<p>For a full path
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>↦</mo><msub><mi>p</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">t\mapsto p_t</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>≤</mo><mi>t</mi><mo>≤</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">0\leq t\leq1</annotation></semantics></math>,
+its energy is <a href="#ref-AmbrosioGigliSavare2008">[16]</a> <span
+id="eq:wo-path-energy"></span><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="script">ℰ</mi><mrow><mi mathvariant="normal">W</mi><mi mathvariant="normal">O</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msubsup><mo>∫</mo><mn>0</mn><mn>1</mn></msubsup><mo stretchy="false" form="postfix">∥</mo><msub><mi>∂</mi><mi>t</mi></msub><msub><mi>p</mi><mi>t</mi></msub><msubsup><mo stretchy="false" form="postfix">∥</mo><mrow><msub><mi>p</mi><mi>t</mi></msub><mo>,</mo><mrow><mi mathvariant="normal">W</mi><mi mathvariant="normal">O</mi></mrow></mrow><mn>2</mn></msubsup><mspace width="0.167em"></mspace><mi>d</mi><mi>t</mi><mo>=</mo><msubsup><mo>∫</mo><mn>0</mn><mn>1</mn></msubsup><munder><mi mathvariant="normal">inf</mi><mrow><mi>v</mi><mo>:</mo><mspace width="0.167em"></mspace><mrow><mi mathvariant="normal">div</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mi>t</mi></msub><mi>v</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>−</mi><msub><mi>∂</mi><mi>t</mi></msub><msub><mi>p</mi><mi>t</mi></msub></mrow></munder><msub><mo>∫</mo><mi>E</mi></msub><mo stretchy="false" form="postfix">∥</mo><mi>v</mi><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup><msub><mi>p</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>d</mi><mi>y</mi><mspace width="0.167em"></mspace><mi>d</mi><mi>t</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+\label{eq:wo-path-energy}
+\mathcal E_{\mathrm{WO}}(p)
+=\int_0^1\|\partial_t p_t\|_{p_t,\mathrm{WO}}^2\,dt
+=\int_0^1\inf_{v:\,\mathop{\mathrm{div}}(p_tv)=-\partial_t p_t}
+\int_E\|v(y)\|^2p_t(y)\,dy\,dt.
+\end{equation}</annotation></semantics></math><span class="equation-number">(12)</span></p>
+</section>
+</section>
+<section id="subsec:gaussian-minimum-energy" class="level3"
+data-number="4.4">
+<h3 data-number="4.4"><span class="header-section-number">4.4</span>
+Minimum-energy velocity for an isotropic Gaussian initial law</h3>
+<p>Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>∼</mo><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><mo>∈</mo><msub><mi mathvariant="script">𝒫</mi><mo>+</mo></msub><mo stretchy="false" form="prefix">(</mo><mi>E</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">X\sim p_{\mathrm{data}}\in\mathcal{P}_{+}(E)</annotation></semantics></math>
+have finite second moment, and let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Z</mi><mo>∼</mo><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><mo>=</mo><mi mathvariant="script">𝒩</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mrow><mi mathvariant="normal">Id</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">Z\sim p_{\mathrm{init}}=\mathcal N(0,\operatorname{Id})</annotation></semantics></math>
+be independent of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>.
+No Gaussian assumption is made on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><annotation encoding="application/x-tex">p_{\mathrm{data}}</annotation></semantics></math>.
+For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>t</mi></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi>X</mi><mo>+</mo><mi>t</mi><mi>Z</mi></mrow><annotation encoding="application/x-tex">X_t=(1-t)X+tZ</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>&lt;</mo><mi>t</mi><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">0&lt;t&lt;1</annotation></semantics></math>,
+Gaussian convolution gives a smooth positive density. Differentiating
+its integral expression gives
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>∇</mi><msub><mi>p</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>−</mi><mfrac><mn>1</mn><msup><mi>t</mi><mn>2</mn></msup></mfrac><msub><mo>∫</mo><mi>E</mi></msub><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><mi>y</mi><mo>−</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi>x</mi><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mfrac><mn>1</mn><msup><mi>t</mi><mi>d</mi></msup></mfrac><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><mspace width="-0.167em"></mspace><mo stretchy="false" form="prefix">(</mo><mfrac><mrow><mi>y</mi><mo>−</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi>x</mi></mrow><mi>t</mi></mfrac><mo stretchy="false" form="postfix">)</mo><mi>d</mi><mi>x</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">\nabla p_t(y)
+=-\frac1{t^2}\int_E\bigl(y-(1-t)x\bigr)p_{\mathrm{data}}(x)
+\frac1{t^d}p_{\mathrm{init}}\!(\frac{y-(1-t)x}{t})dx,</annotation></semantics></math>
+and hence
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>∇</mi><mrow><mi mathvariant="normal">log</mi><mo>&#8289;</mo></mrow><msub><mi>p</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>−</mi><mfrac><mn>1</mn><mi>t</mi></mfrac><mi mathvariant="double-struck">𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>Z</mi><mo>∣</mo><msub><mi>X</mi><mi>t</mi></msub><mo>=</mo><mi>y</mi><mo stretchy="false" form="postfix">]</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\nabla\log p_t(y)=-\frac1t\mathbb E[Z\mid X_t=y].</annotation></semantics></math>
+This Gaussian score relation also appears in stochastic interpolants <a
+href="#ref-AlbergoBoffiVandenEijnden2025">[3]</a>. Combining it with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>t</mi></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi>X</mi><mo>+</mo><mi>t</mi><mi>Z</mi></mrow><annotation encoding="application/x-tex">X_t=(1-t)X+tZ</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>v</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi mathvariant="double-struck">𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>Z</mi><mo>−</mo><mi>X</mi><mo>∣</mo><msub><mi>X</mi><mi>t</mi></msub><mo>=</mo><mi>y</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">v_t(y)=\mathbb E[Z-X\mid X_t=y]</annotation></semantics></math>
+yields
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>v</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>−</mi><mfrac><mrow><mi>y</mi><mo>+</mo><mi>t</mi><mi>∇</mi><mrow><mi mathvariant="normal">log</mi><mo>&#8289;</mo></mrow><msub><mi>p</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mn>1</mn><mo>−</mo><mi>t</mi></mrow></mfrac><mo>=</mo><mi>∇</mi><msub><mi>ϕ</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>ϕ</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>−</mi><mfrac><mrow><mo stretchy="false" form="postfix">∥</mo><mi>y</mi><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup></mrow><mrow><mn>2</mn><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mo>−</mo><mfrac><mi>t</mi><mrow><mn>1</mn><mo>−</mo><mi>t</mi></mrow></mfrac><mrow><mi mathvariant="normal">log</mi><mo>&#8289;</mo></mrow><msub><mi>p</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">v_t(y)=-\frac{y+t\nabla\log p_t(y)}{1-t}
+=\nabla\phi_t(y),\qquad
+\phi_t(y)=-\frac{\|y\|^2}{2(1-t)}
+          -\frac{t}{1-t}\log p_t(y).</annotation></semantics></math> The
+field has finite
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>L</mi><mn>2</mn></msup><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">L^2(p_t)</annotation></semantics></math>
+norm under the second-moment assumption. It is therefore the gradient
+representative in the weighted Helmholtz decomposition and minimises the
+kinetic energy among fields representing
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>∂</mi><mi>t</mi></msub><msub><mi>p</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">\partial_t p_t</annotation></semantics></math>
+<a href="#ref-AmbrosioGigli2013">[17]</a>. This holds for every such
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><annotation encoding="application/x-tex">p_{\mathrm{data}}</annotation></semantics></math>,
+including the Gaussian mixture used in our figures.</p>
+</section>
+<section id="subsec:action" class="level3" data-number="4.5">
+<h3 data-number="4.5"><span class="header-section-number">4.5</span>
+Geodesics in Wasserstein–Otto geometry</h3>
+<p>A constant-speed geodesic between
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><annotation encoding="application/x-tex">p_{\mathrm{data}}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><annotation encoding="application/x-tex">p_{\mathrm{init}}</annotation></semantics></math>
+minimises the kinetic action. For endpoints with finite second moments,
+the Benamou–Brenier formula gives <a
+href="#ref-BenamouBrenier2000">[5]</a> <span
+id="eq:geodesic-minimum-action"></span><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>W</mi><mn>2</mn><mn>2</mn></msubsup><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><mo>,</mo><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><munder><mi mathvariant="normal">inf</mi><mtable><mtr><mtd columnalign="center" style="text-align: center"><mrow><msub><mi>∂</mi><mi>t</mi></msub><msub><mi>p</mi><mi>t</mi></msub><mo>+</mo><mrow><mi mathvariant="normal">div</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mi>t</mi></msub><msub><mi>v</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0</mn></mrow></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mrow><msub><mi>p</mi><mn>0</mn></msub><mo>=</mo><msub><mi>p</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></msub><mo>,</mo><mspace width="0.222em"></mspace><msub><mi>p</mi><mn>1</mn></msub><mo>=</mo><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub></mrow></mtd></mtr></mtable></munder><msubsup><mo>∫</mo><mn>0</mn><mn>1</mn></msubsup><msub><mo>∫</mo><mi>E</mi></msub><mo stretchy="false" form="postfix">∥</mo><msub><mi>v</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup><msub><mi>p</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>d</mi><mi>y</mi><mspace width="0.167em"></mspace><mi>d</mi><mi>t</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">\begin{equation}
+\label{eq:geodesic-minimum-action}
+W_2^2(p_{\mathrm{data}},p_{\mathrm{init}})
+=\inf_{\substack{\partial_t p_t+\mathop{\mathrm{div}}(p_tv_t)=0\\
+p_0=p_{\mathrm{data}},\ p_1=p_{\mathrm{init}}}}
+\int_0^1\int_E\|v_t(y)\|^2p_t(y)\,dy\,dt,
+\end{equation}</annotation></semantics></math><span class="equation-number">(13)</span> where the admissible
+pairs satisfy the continuity equation weakly and have finite action. If
+the geodesic density is smooth and positive and its minimum-energy
+velocity
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>v</mi><mi>t</mi><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">o</mi></mrow></msubsup><mo>=</mo><mi>∇</mi><msub><mi>ϕ</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">v_t^{\mathrm{geo}}=\nabla\phi_t</annotation></semantics></math>
+is continuously differentiable in time and space, this velocity
+satisfies <a href="#ref-AmbrosioGigli2013">[17]</a> <span
+id="eq:geodesic-acceleration"></span><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><mspace width="0.167em"></mspace><msub><mi>∂</mi><mi>t</mi></msub><msubsup><mi>v</mi><mi>t</mi><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">o</mi></mrow></msubsup><mo>+</mo><mo stretchy="false" form="prefix">(</mo><mi>D</mi><msubsup><mi>v</mi><mi>t</mi><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">o</mi></mrow></msubsup><mo stretchy="false" form="postfix">)</mo><msubsup><mi>v</mi><mi>t</mi><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">o</mi></mrow></msubsup><mo>=</mo><mn>0</mn><mi>.</mi><mspace width="0.167em"></mspace></mrow></menclose><annotation encoding="application/x-tex">\begin{equation}
+\label{eq:geodesic-acceleration}
+\boxed{\,
+\partial_t v_t^{\mathrm{geo}}
++(Dv_t^{\mathrm{geo}})v_t^{\mathrm{geo}}=0.
+\,}
+\end{equation}</annotation></semantics></math><span class="equation-number">(14)</span> Here
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><msubsup><mi>v</mi><mi>t</mi><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">o</mi></mrow></msubsup></mrow><annotation encoding="application/x-tex">Dv_t^{\mathrm{geo}}</annotation></semantics></math>
+is the spatial Jacobian matrix.</p>
+<p>Figure <a href="#fig:fm-geodesic-comparison">5</a> compares the
+independent Flow Matching path with displacement interpolation along a
+numerical optimal coupling of the same mixture and Gaussian endpoints <a
+href="#ref-Villani2009">[6]</a>. We approximate each endpoint by 16384
+equally weighted samples and minimise their squared-distance assignment
+cost. The assigned particles move along straight segments; Gaussian
+smoothing of their mass and flux, with bandwidth
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.16</mn><annotation encoding="application/x-tex">0.16</annotation></semantics></math>,
+gives the intermediate densities and velocities. At
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">t=0</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t=1</annotation></semantics></math>,
+the known endpoint densities are displayed exactly. This approximates
+the geodesic between the continuous endpoint distributions. For the
+particle comparison, we select the same 150 Gaussian points from the
+numerical coupling. We integrate the reversed Flow Matching field with a
+fourth-order Runge–Kutta method and follow the assigned straight
+segments for optimal transport.</p>
+<figure id="fig:fm-geodesic-comparison" data-latex-placement="H">
+<img alt="Figure 5. Flow Matching velocity and particle trajectories (rows 1–2), and numerical WO velocity and particle trajectories (rows 3–4). Both methods start from the same 150 Gaussian points, with matching particle colours. Time runs from t = 1 t=1 (left) to t = 0 t=0 (right); arrows show the reverse-time velocity and curves retain past trajectories." width="2400" height="1677" loading="lazy" src="assets/fm_geodesic_comparison.jpg">
+<figcaption>Figure 5. Flow Matching velocity and particle trajectories (rows 1–2),
+and numerical WO velocity and particle trajectories (rows 3–4). Both
+methods start from the same 150 Gaussian points, with matching particle
+colours. Time runs from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t=1</annotation></semantics></math>
+(left) to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">t=0</annotation></semantics></math>
+(right); arrows show the reverse-time velocity and curves retain past
+trajectories.</figcaption>
+</figure>
+</section>
+</section>
+<section id="sec:discussion" class="level2" data-number="5">
+<h2 data-number="5"><span class="header-section-number">5</span>
+Discussion</h2>
+<section id="minimum-energy-velocity-and-a-nongeodesic-path"
+class="level3" data-number="5.1">
+<h3 data-number="5.1"><span class="header-section-number">5.1</span>
+Minimum-energy velocity and a nongeodesic path</h3>
+<p>For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msub><mo>=</mo><mi mathvariant="script">𝒩</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mrow><mi mathvariant="normal">Id</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p_{\mathrm{init}}=\mathcal N(0,\operatorname{Id})</annotation></semantics></math>,
+the exact population Flow Matching field is a gradient and is therefore
+the minimum-energy representative of each density variation, as shown in
+Section <a href="#subsec:gaussian-minimum-energy">4.4</a>. A learned
+network approximates this field. The density path can nevertheless have
+excess action. Take independent
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>,</mo><mi>Z</mi><mo>∼</mo><mi mathvariant="script">𝒩</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mrow><mi mathvariant="normal">Id</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">X,Z\sim\mathcal N(0,\operatorname{Id})</annotation></semantics></math>.
+Our interpolation formula gives
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>t</mi></msub><mo>=</mo><mi mathvariant="script">𝒩</mi><mspace width="-0.167em"></mspace><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo>+</mo><msup><mi>t</mi><mn>2</mn></msup><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo><mrow><mi mathvariant="normal">Id</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>v</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><mn>2</mn><mi>t</mi><mo>−</mo><mn>1</mn></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo>+</mo><msup><mi>t</mi><mn>2</mn></msup></mrow></mfrac><mspace width="0.167em"></mspace><mi>y</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">p_t=\mathcal N\!(0,\bigl((1-t)^2+t^2\bigr)\operatorname{Id}),
+\qquad
+v_t(y)=\frac{2t-1}{(1-t)^2+t^2}\,y.</annotation></semantics></math> The
+Gaussian contracts up to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">t=1/2</annotation></semantics></math>
+and then expands. Its WO energy is positive, whereas the geodesic
+between these identical endpoints is constant, with zero energy.
+Figure <a href="#fig:equal-gaussian-paths">6</a> illustrates the
+difference.</p>
+<figure id="fig:equal-gaussian-paths" data-latex-placement="H">
+<img alt="Figure 6. Transport between identical standard Gaussians. Flow Matching (top) contracts and expands; optimal transport (bottom) leaves particles fixed. Both rows use the same initial points; time runs from t = 1 t=1 to t = 0 t=0 ." width="2400" height="870" loading="lazy" src="assets/particles_gaussian_to_same_gaussian.jpg">
+<figcaption>Figure 6. Transport between identical standard Gaussians. Flow
+Matching (top) contracts and expands; optimal transport (bottom) leaves
+particles fixed. Both rows use the same initial points; time runs from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t=1</annotation></semantics></math>
+to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">t=0</annotation></semantics></math>.</figcaption>
+</figure>
+</section>
+<section
+id="straight-trajectories-and-training-towards-optimal-transport"
+class="level3" data-number="5.2">
+<h3 data-number="5.2"><span class="header-section-number">5.2</span>
+Straight trajectories and training towards optimal transport</h3>
+<p>For quadratic optimal transport in Euclidean space, particles along a
+Wasserstein geodesic follow affine trajectories
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mi>t</mi></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><msub><mi>Y</mi><mn>0</mn></msub><mo>+</mo><mi>t</mi><msub><mi>Y</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">Y_t=(1-t)Y_0+tY_1</annotation></semantics></math>
+<a href="#ref-Villani2009">[6]</a>. For a smooth flow
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>Y</mi><mo accent="true">̇</mo></mover><mi>t</mi></msub><mo>=</mo><msub><mi>v</mi><mi>θ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo>,</mo><msub><mi>Y</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\dot Y_t=v_\theta(t,Y_t)</annotation></semantics></math>,
+this means
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>Y</mi><mo accent="true">̈</mo></mover><mi>t</mi></msub><mo>=</mo><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">[</mo><msub><mi>∂</mi><mi>t</mi></msub><msub><mi>v</mi><mi>θ</mi></msub><mo>+</mo><mo stretchy="false" form="prefix">(</mo><mi>D</mi><msub><mi>v</mi><mi>θ</mi></msub><mo stretchy="false" form="postfix">)</mo><msub><mi>v</mi><mi>θ</mi></msub><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">]</mo><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo>,</mo><msub><mi>Y</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">\ddot Y_t=
+\bigl[\partial_t v_\theta+(Dv_\theta)v_\theta\bigr](t,Y_t)=0.</annotation></semantics></math>
+A possible training regularisation is therefore
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="script">ℒ</mi><mrow><mi mathvariant="normal">F</mi><mi mathvariant="normal">M</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mi>λ</mi><msubsup><mo>∫</mo><mn>0</mn><mn>1</mn></msubsup><mi mathvariant="double-struck">𝔼</mi><mspace width="-0.167em"></mspace><mo stretchy="false" form="prefix">[</mo><mo stretchy="false" form="postfix">∥</mo><msub><mi>∂</mi><mi>t</mi></msub><msub><mi>v</mi><mi>θ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo>,</mo><msub><mi>Y</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mo stretchy="false" form="prefix">(</mo><mi>D</mi><msub><mi>v</mi><mi>θ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo>,</mo><msub><mi>Y</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo><msub><mi>v</mi><mi>θ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo>,</mo><msub><mi>Y</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup><mo stretchy="false" form="postfix">]</mo><mi>d</mi><mi>t</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>λ</mi><mo>&gt;</mo><mn>0</mn><mo>,</mo></mrow><annotation encoding="application/x-tex">\mathcal L_{\mathrm{FM}}(\theta)
++\lambda\int_0^1\mathbb E\![
+\|\partial_t v_\theta(t,Y_t)
++(Dv_\theta(t,Y_t))v_\theta(t,Y_t)\|^2]dt,
+\qquad \lambda&gt;0,</annotation></semantics></math> where the
+expectation is over trajectories of the learned flow. This encourages
+constant velocities along particles. In several dimensions, straightness
+alone does not select the quadratic optimal coupling. To target OT,
+endpoint matching and the gradient structure of the geodesic velocity
+must also be controlled <a href="#ref-AmbrosioGigli2013">[17]</a>.</p>
+<p>The independent-pair loss prescribes a generally nongeodesic path, so
+the added constraint changes its population minimiser. Using an OT
+coupling for the training pairs makes the regression target compatible
+with displacement interpolation <a href="#ref-TongEtAl2024">[22]</a>.
+These choices matter both for transport cost and for numerical sampling:
+an exactly constant velocity along a trajectory allows a single explicit
+Euler step to reach its endpoint, which motivates learning straighter
+flows <a href="#ref-LiuGongLiu2023">[7]</a>.</p>
+</section>
+</section>
+<section id="sec:additional-visualisations" class="level2"
+data-number="6">
+<h2 data-number="6"><span class="header-section-number">6</span>
+Additional visualisations</h2>
+<p>We add two visualisations comparing Flow Matching and optimal
+transport, from a Gaussian initial law to a Laplace law and to a
+Gaussian mixture.</p>
+<figure id="fig:gaussian-laplace-particles" data-latex-placement="H">
+<img alt="Figure 7. Gaussian to Laplace transport: Flow Matching (top) and optimal transport (bottom), with the same initial particles and past trajectories. Time decreases from t = 1 t=1 to t = 0 t=0 ." width="2400" height="870" loading="lazy" src="assets/particles_gaussian_to_laplace.jpg">
+<figcaption>Figure 7. Gaussian to Laplace transport: Flow Matching (top) and
+optimal transport (bottom), with the same initial particles and past
+trajectories. Time decreases from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t=1</annotation></semantics></math>
+to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">t=0</annotation></semantics></math>.</figcaption>
+</figure>
+<figure id="fig:gaussian-complex-mixture-particles"
+data-latex-placement="H">
+<img alt="Figure 8. Gaussian to Gaussian mixture transport: Flow Matching (top) and numerical optimal transport (bottom), with the same initial particles and past trajectories. Time decreases from t = 1 t=1 to t = 0 t=0 ." width="2400" height="870" loading="lazy" src="assets/particles_gaussian_to_complex_gmm.jpg">
+<figcaption>Figure 8. Gaussian to Gaussian mixture transport: Flow Matching (top)
+and numerical optimal transport (bottom), with the same initial
+particles and past trajectories. Time decreases from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t=1</annotation></semantics></math>
+to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">t=0</annotation></semantics></math>.</figcaption>
+</figure>
+<p>We also compare four initial laws transported to the same Gaussian
+mixture: a Gaussian, an independent-coordinate Laplace law, a uniform
+disk and a uniform square. All four are centred with covariance
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Id</mi><annotation encoding="application/x-tex">\operatorname{Id}</annotation></semantics></math>
+before numerical regularisation.</p>
+<figure id="fig:initial-laws-complex-mixture" data-latex-placement="H">
+<img alt="Figure 9. Flow Matching from four initial laws to the same Gaussian mixture. Rows show the Gaussian, Laplace, uniform disk and uniform square initial laws. Colours and contours show density; particles retain their past trajectories. Time decreases from t = 1 t=1 to t = 0 t=0 . Endpoint laws are mollified with a Gaussian of standard deviation 0.06 0.06 for numerical evaluation." width="2400" height="1675" loading="lazy" src="assets/initial_laws_to_complex_gmm.jpg">
+<figcaption>Figure 9. Flow Matching from four initial laws to the same Gaussian
+mixture. Rows show the Gaussian, Laplace, uniform disk and uniform
+square initial laws. Colours and contours show density; particles retain
+their past trajectories. Time decreases from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t=1</annotation></semantics></math>
+to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">t=0</annotation></semantics></math>.
+Endpoint laws are mollified with a Gaussian of standard deviation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.06</mn><annotation encoding="application/x-tex">0.06</annotation></semantics></math>
+for numerical evaluation.</figcaption>
+</figure>
+</section>
+<section id="references" class="level2 unnumbered">
+<h2 class="unnumbered">References</h2>
+<div id="ref-NicolaescuCoarea">
+
+</div>
+<p>[1] L. I. Nicolaescu, <em>The co-area formula</em>, lecture notes,
+revised 2021. <a href="https://www3.nd.edu/~lnicolae/Coarea.pdf"
+class="uri">https://www3.nd.edu/~lnicolae/Coarea.pdf</a>.</p>
+<div id="ref-LipmanEtAl2023">
+
+</div>
+<p>[2] Y. Lipman, R. T. Q. Chen, H. Ben-Hamu, M. Nickel, and M. Le,
+<em>Flow Matching for Generative Modeling</em>, ICLR, 2023. <a
+href="https://arxiv.org/abs/2210.02747"
+class="uri">https://arxiv.org/abs/2210.02747</a>.</p>
+<div id="ref-AlbergoBoffiVandenEijnden2025">
+
+</div>
+<p>[3] M. S. Albergo, N. M. Boffi, and E. Vanden-Eijnden, <em>Stochastic
+Interpolants: A Unifying Framework for Flows and Diffusions</em>,
+Journal of Machine Learning Research <strong>26</strong> (2025),
+no. 209, 1–80. <a href="https://www.jmlr.org/papers/v26/23-1605.html"
+class="uri">https://www.jmlr.org/papers/v26/23-1605.html</a>.</p>
+<div id="ref-Otto2001">
+
+</div>
+<p>[4] F. Otto, <em>The geometry of dissipative evolution equations: the
+porous medium equation</em>, Communications in Partial Differential
+Equations, <strong>26</strong> (2001), no. 1–2, 101–174. DOI: <a
+href="https://doi.org/10.1081/PDE-100002243">10.1081/PDE-100002243</a>.</p>
+<div id="ref-BenamouBrenier2000">
+
+</div>
+<p>[5] J.-D. Benamou and Y. Brenier, <em>A Computational Fluid Mechanics
+Solution to the Monge–Kantorovich Mass Transfer Problem</em>, Numerische
+Mathematik, vol. 84, no. 3, pp. 375–393, 2000. DOI: <a
+href="https://doi.org/10.1007/s002110050002">10.1007/s002110050002</a>.</p>
+<div id="ref-Villani2009">
+
+</div>
+<p>[6] C. Villani, <em>Optimal Transport: Old and New</em>, Grundlehren
+der mathematischen Wissenschaften, vol. 338, Springer, Berlin,
+Heidelberg, 2009. DOI: <a
+href="https://doi.org/10.1007/978-3-540-71050-9">10.1007/978-3-540-71050-9</a>.</p>
+<div id="ref-LiuGongLiu2023">
+
+</div>
+<p>[7] X. Liu, C. Gong, and Q. Liu, <em>Flow Straight and Fast: Learning
+to Generate and Transfer Data with Rectified Flow</em>, ICLR, 2023. <a
+href="https://arxiv.org/abs/2209.03003"
+class="uri">https://arxiv.org/abs/2209.03003</a>.</p>
+<div id="ref-EsserEtAl2024">
+
+</div>
+<p>[8] P. Esser et al., <em>Scaling Rectified Flow Transformers for
+High-Resolution Image Synthesis</em>, ICML, PMLR <strong>235</strong>
+(2024), 12606–12633. <a
+href="https://proceedings.mlr.press/v235/esser24a.html"
+class="uri">https://proceedings.mlr.press/v235/esser24a.html</a>.</p>
+<div id="ref-ZhuEtAl2024">
+
+</div>
+<p>[9] Y. Zhu, X. Liu, and Q. Liu, <em>SlimFlow: Training Smaller
+One-Step Diffusion Models with Rectified Flow</em>, ECCV, 2024. <a
+href="https://www.ecva.net/papers/eccv_2024/papers_ECCV/papers/10822.pdf"
+class="uri">https://www.ecva.net/papers/eccv_2024/papers_ECCV/papers/10822.pdf</a>.</p>
+<div id="ref-AvrahamiEtAl2025">
+
+</div>
+<p>[10] O. Avrahami, O. Patashnik, O. Fried, E. Nemchinov, K. Aberman,
+D. Lischinski, and D. Cohen-Or, <em>Stable Flow: Vital Layers for
+Training-Free Image Editing</em>, CVPR, 2025, 7877–7888. <a
+href="https://openaccess.thecvf.com/content/CVPR2025/html/Avrahami_Stable_Flow_Vital_Layers_for_Training-Free_Image_Editing_CVPR_2025_paper.html"
+class="uri">https://openaccess.thecvf.com/content/CVPR2025/html/Avrahami_Stable_Flow_Vital_Layers_for_Training-Free_Image_Editing_CVPR_2025_paper.html</a>.</p>
+<div id="ref-LeEtAl2023">
+
+</div>
+<p>[11] M. Le et al., <em>Voicebox: Text-Guided Multilingual Universal
+Speech Generation at Scale</em>, NeurIPS <strong>36</strong> (2023). <a
+href="https://arxiv.org/abs/2306.15687"
+class="uri">https://arxiv.org/abs/2306.15687</a>.</p>
+<div id="ref-VyasEtAl2023">
+
+</div>
+<p>[12] A. Vyas et al., <em>Audiobox: Unified Audio Generation with
+Natural Language Prompts</em>, arXiv:2312.15821, 2023. <a
+href="https://arxiv.org/abs/2312.15821"
+class="uri">https://arxiv.org/abs/2312.15821</a>.</p>
+<div id="ref-PolyakEtAl2024">
+
+</div>
+<p>[13] A. Polyak et al., <em>Movie Gen: A Cast of Media Foundation
+Models</em>, arXiv:2410.13720, 2024. <a
+href="https://arxiv.org/abs/2410.13720"
+class="uri">https://arxiv.org/abs/2410.13720</a>.</p>
+<div id="ref-KiEtAl2025">
+
+</div>
+<p>[14] T. Ki, D. Min, and G. Chae, <em>FLOAT: Generative Motion Latent
+Flow Matching for Audio-driven Talking Portrait</em>, ICCV, 2025,
+14699–14710. <a
+href="https://openaccess.thecvf.com/content/ICCV2025/html/Ki_FLOAT_Generative_Motion_Latent_Flow_Matching_for_Audio-driven_Talking_Portrait_ICCV_2025_paper.html"
+class="uri">https://openaccess.thecvf.com/content/ICCV2025/html/Ki_FLOAT_Generative_Motion_Latent_Flow_Matching_for_Audio-driven_Talking_Portrait_ICCV_2025_paper.html</a>.</p>
+<div id="ref-Bogachev2007">
+
+</div>
+<p>[15] V. I. Bogachev, <em>Measure Theory</em>, Vols. I–II, Springer,
+2007. DOI: <a
+href="https://doi.org/10.1007/978-3-540-34514-5">10.1007/978-3-540-34514-5</a>.</p>
+<div id="ref-AmbrosioGigliSavare2008">
+
+</div>
+<p>[16] L. Ambrosio, N. Gigli, and G. Savaré, <em>Gradient Flows: In
+Metric Spaces and in the Space of Probability Measures</em>, 2nd ed.,
+Lectures in Mathematics ETH Zürich, Birkhäuser, Basel, 2008. DOI: <a
+href="https://doi.org/10.1007/978-3-7643-8722-8">10.1007/978-3-7643-8722-8</a>.</p>
+<div id="ref-AmbrosioGigli2013">
+
+</div>
+<p>[17] L. Ambrosio and N. Gigli, <em>A user’s guide to optimal
+transport</em>, in <em>Modelling and Optimisation of Flows on
+Networks</em>, Lecture Notes in Mathematics <strong>2062</strong>,
+Springer, 2013, 1–155. <a
+href="https://cvgmt.sns.it/media/doc/paper/195/users_guide-final.pdf"
+class="uri">https://cvgmt.sns.it/media/doc/paper/195/users_guide-final.pdf</a>.</p>
+<div id="ref-Mallat2025">
+
+</div>
+<p>[18] S. Mallat, <em>Modèles probabilistes par énergie de Gibbs et
+GAN</em>, lecture in <em>Génération de données en IA par transport et
+débruitage (2)</em>, Collège de France, 2024–2025. <a
+href="https://www.college-de-france.fr/fr/agenda/cours/generation-de-donnees-en-ia-par-transport-et-debruitage/modeles-probabilistes-par-energie-de-gibbs-et-gan"
+class="uri">https://www.college-de-france.fr/fr/agenda/cours/generation-de-donnees-en-ia-par-transport-et-debruitage/modeles-probabilistes-par-energie-de-gibbs-et-gan</a>.</p>
+<div id="ref-MetropolisEtAl1953">
+
+</div>
+<p>[19] N. Metropolis, A. W. Rosenbluth, M. N. Rosenbluth, A. H. Teller,
+and E. Teller, <em>Equation of State Calculations by Fast Computing
+Machines</em>, The Journal of Chemical Physics <strong>21</strong>
+(1953), no. 6, 1087–1092. DOI: <a
+href="https://doi.org/10.1063/1.1699114">10.1063/1.1699114</a>.</p>
+<div id="ref-HoEtAl2020">
+
+</div>
+<p>[20] J. Ho, A. Jain, and P. Abbeel, <em>Denoising Diffusion
+Probabilistic Models</em>, NeurIPS <strong>33</strong> (2020),
+6840–6851. <a
+href="https://proceedings.neurips.cc/paper/2020/hash/4c5bcfec8584af0d967f1ab10179ca4b-Abstract.html"
+class="uri">https://proceedings.neurips.cc/paper/2020/hash/4c5bcfec8584af0d967f1ab10179ca4b-Abstract.html</a>.</p>
+<div id="ref-SongEtAl2021">
+
+</div>
+<p>[21] Y. Song, J. Sohl-Dickstein, D. P. Kingma, A. Kumar, S. Ermon,
+and B. Poole, <em>Score-Based Generative Modeling through Stochastic
+Differential Equations</em>, ICLR, 2021. <a
+href="https://arxiv.org/abs/2011.13456"
+class="uri">https://arxiv.org/abs/2011.13456</a>.</p>
+<div id="ref-TongEtAl2024">
+
+</div>
+<p>[22] A. Tong, K. Fatras, N. Malkin, G. Huguet, Y. Zhang,
+J. Rector-Brooks, G. Wolf, and Y. Bengio, <em>Improving and generalizing
+flow-based generative models with minibatch optimal transport</em>,
+Transactions on Machine Learning Research, 2024. <a
+href="https://arxiv.org/abs/2302.00482"
+class="uri">https://arxiv.org/abs/2302.00482</a>.</p>
+<div id="ref-Guilbert2026Atlas">
+
+</div>
+<p>[23] P. Guilbert, <em>Fisher–Rao and Wasserstein–Otto Geometries of
+Parametric Probability Families: A Comparative Atlas</em>, preprint,
+Zenodo, 2026. DOI: <a
+href="https://doi.org/10.5281/zenodo.22921933">10.5281/zenodo.22921933</a>.</p>
+</section>
+</main>
+<footer>Pierre Guilbert · 2026 · <a href="https://orcid.org/0009-0002-1582-4435">ORCID</a> · <a href="mailto:spguilbert@gmail.com">Contact</a><br>Pedagogical manuscript · <a href="https://doi.org/10.5281/zenodo.24084198">DOI: 10.5281/zenodo.24084198</a> · <a href="https://zenodo.org/records/24084198">Zenodo</a></footer></body></html>

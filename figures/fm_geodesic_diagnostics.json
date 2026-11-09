@@ -1,0 +1,21 @@
+{
+  "samples": 16384,
+  "bandwidth": 0.16,
+  "action_1024": 3.7550085969708316,
+  "action_fine": 3.747888258275153,
+  "relative_action_change": 0.0018998268371414949,
+  "displayed_masses": [
+    1.0000000000001426,
+    1.0000000000001428,
+    1.0000000000001428,
+    1.0000000000001428,
+    1.0000000000001428,
+    1.0000000000001428
+  ],
+  "minimum_sampled_monotonicity": 0.0002518833311050906,
+  "shared_particles": 150,
+  "identical_initial_positions": true,
+  "fm_rk4_max_resolution_difference": 2.360006606357449e-11,
+  "direction": "Gaussian t=1 to data t=0; arrows are -v_t",
+  "interpretation": "Exact OT between empirical measures; smoothed for visualisation, not an exact continuous geodesic"
+}

@@ -1,0 +1,13 @@
+# Manuscript sources and private working notes are never published.
+*.tex
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+contex.md
+plan.md
+.DS_Store
+__pycache__/
+*.pyc
+.venv/

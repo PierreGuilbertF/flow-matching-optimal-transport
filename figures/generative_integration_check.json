@@ -1,0 +1,8 @@
+{
+  "particles": 150,
+  "method": "RK4",
+  "substeps_per_frame": 8,
+  "max_difference_from_half_resolution": 8.900676445318026e-10,
+  "density_background": "Exact analytic density, not estimated from the particles",
+  "direction": "s=0: initial Gaussian; s=1: data mixture; velocity=-v_(1-s)"
+}
