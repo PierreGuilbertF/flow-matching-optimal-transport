@@ -6,7 +6,7 @@ An illustrated introduction to the velocity fields of Flow Matching and their re
 
 For an isotropic Gaussian initial law, the population Flow Matching velocity is already the minimum-energy representative of the density variation. The path is generally not a Wasserstein geodesic.
 
-[Read the manuscript (PDF)](manuscript.pdf) · [Website source](docs/index.html) · [Figure gallery source](docs/gallery.html) · [BibTeX](citation.bib)
+[Read the manuscript (PDF)](manuscript.pdf) · [Website](https://pierreguilbertf.github.io/flow-matching-optimal-transport/) · [Figure gallery](https://pierreguilbertf.github.io/flow-matching-optimal-transport/gallery.html) · [BibTeX](citation.bib)
 
 ![Flow Matching and optimal transport: densities, velocity fields and particle trajectories](docs/assets/fm_geodesic_comparison.jpg)
 
